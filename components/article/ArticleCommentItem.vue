@@ -18,7 +18,7 @@
           <div
             class="mr-3 d-flex align-items-center justify-content-center px-0"
           >
-            <img class="rounded-circle img-fluid" :src="comment.author.image" />
+            <img class="comment-image rounded-circle img-fluid" :src="comment.author.image" />
           </div>
           <span class="author mr-auto pt-1">{{ comment.author.username }}</span>
           <span class="date text-muted"
@@ -42,5 +42,9 @@ export default {
 <style lang="scss" scoped>
 .comment-body {
     font-size: .9rem;
+}
+.comment-image {
+  width: 32px;
+  height: 32px;
 }
 </style>

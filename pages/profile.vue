@@ -1,8 +1,11 @@
 <template>
   <div>
-    <a-header title="Article" text="Global feeds" />
-    <div class="container d-flex flex-row pb-5">
+    <a-header :title="$auth.user.username" text="Profile" />
+    <div class="container d-flex flex-row pb-5 pt-3">
       <div class="col-12 col-lg-8">
+        <h3>
+          Favorite articles
+        </h3>
         <articles
           :loading="loading"
           :articles="articleResponse.articles"
@@ -21,48 +24,26 @@
           ></b-pagination>
         </div>
       </div>
-      <div class="col-lg-4 mt-3">
-        <popular-tags
-          class="position-sticky"
-          :tags="popularTags.tags"
-          :loading="tagsLoading"
-        ></popular-tags>
-      </div>
     </div>
   </div>
 </template>
-
 <script>
 import Articles from '@/components/article/Articles.vue'
-import PopularTags from '@/components/article/PopularTags.vue'
 export default {
   layout: 'Layout',
+  middleware: 'auth',
   head: {
-    title: 'articles',
+    title: `Profile`,
   },
-  components: { Articles, PopularTags },
+  components: { Articles },
   data() {
     return {
-      filter: { currentPage: 1, tag: null },
+      filter: { currentPage: 1, tag: null, username: this.$auth.user.username },
       loading: true,
-      tagsLoading: true,
       articleResponse: [],
-      popularTags: [],
     }
   },
-  watch: {
-    '$route.query.tag'(newValue, oldValue) {
-      if (newValue != oldValue) {
-        if (newValue) this.filter.tag = newValue
-        else this.filter.tag = null
-        this.getData()
-      }
-    },
-  },
   async mounted() {
-    if (this.$route.query.tag) this.filter.tag = this.$route.query.tag
-    else this.filter.tag = null
-    await this.getTags()
     await this.getData()
   },
   methods: {
@@ -74,15 +55,10 @@ export default {
       this.articleResponse.articles = ['', '', '', '', '', '', '', '', '', '']
       this.scrollToTop()
       this.articleResponse = await this.$store.dispatch(
-        'getArticles',
+        'getFavoriteArticles',
         this.filter
       )
       this.loading = false
-    },
-    async getTags() {
-      this.tagsLoading = true
-      this.popularTags = await this.$store.dispatch('getPopularTags')
-      this.tagsLoading = false
     },
     scrollToTop() {
       document.body.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -90,3 +66,4 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped></style>

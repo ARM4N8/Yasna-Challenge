@@ -12,7 +12,7 @@
             class="mr-3 d-flex align-items-center justify-content-center px-0"
           >
             <img
-              class="rounded-circle img-fluid"
+              class="author-image rounded-circle img-fluid"
               :src="articleData.author.image"
             />
           </div>
@@ -24,18 +24,18 @@
           </div>
           <div class="pt-2">
             <b-button
+              @click="followProfile"
               class="mr-1"
               size="sm"
-              :variant="
-                articleData.author.followeing ? 'light' : 'outline-light'
-              "
+              :variant="following ? 'light' : 'outline-light'"
             >
-              <i
-                v-if="articleData.author.followeing"
-                class="fa-regular fa-check"
-              ></i>
+              <i v-if="following" class="fa-regular fa-check"></i>
               <i v-else class="fa-regular fa-plus"></i>
-              {{ ` follow ${articleData.author.username}` }}
+              {{
+                ` ${following ? 'unfollow' : 'follow'} ${
+                  articleData.author.username
+                }`
+              }}
             </b-button>
             <b-button
               size="sm"
@@ -58,6 +58,46 @@ export default {
       return new Date(Date.parse(date)).toLocaleDateString()
     },
   },
+  data() {
+    return {
+      following: this.articleData.author.following,
+    }
+  },
+  watch: {
+    articleData(newValue, oldValue) {
+      if (newValue != oldValue) {
+        this.following = newValue.author.following
+      }
+    },
+  },
+  methods: {
+    followProfile() {
+      try {
+        if (!this.$auth.loggedIn) {
+          this.$toasted.error('You have to be logged in')
+          return
+        }
+        console.log(this.following)
+        if (this.following) {
+          const response = this.$store.dispatch(
+            'unfollowProfile',
+            this.articleData.author.username
+          )
+          if (response) {
+            this.following = false
+          }
+        } else {
+          const response = this.$store.dispatch(
+            'followProfile',
+            this.articleData.author.username
+          )
+          if (response) {
+            this.following = true
+          }
+        }
+      } catch (error) {}
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -77,6 +117,10 @@ export default {
   }
   .date {
     color: rgb(168, 168, 168);
+  }
+  .author-image {
+    width: 32px;
+    height: 32px;
   }
 }
 </style>

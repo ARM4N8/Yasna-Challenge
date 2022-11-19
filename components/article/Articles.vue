@@ -1,12 +1,26 @@
 <template>
   <div>
     <div>
-      <article-item
-        v-for="(a, index) in articles"
-        :key="index"
-        :articleData="a"
-        :loading="loading"
-      ></article-item>
+      <div class="mt-3 mb-4 h3" v-if="$route.query.tag">
+        <span class="text-muted"> filter: </span>
+        <span class="text-primary mr-3">
+          {{ ` #${$route.query.tag}` }}
+        </span>
+        <b-button @click="removeFilter" variant="outline-secondary" size="sm"
+          >Remove filter</b-button
+        >
+      </div>
+      <template v-if="articles.length > 0">
+        <article-item
+          v-for="(a, index) in articles"
+          :key="index"
+          :articleData="a"
+          :loading="loading"
+        ></article-item>
+      </template>
+      <template v-else>
+        <p class="text-center my-5">No articles are here... yet.</p>
+      </template>
     </div>
   </div>
 </template>
@@ -28,6 +42,13 @@ export default {
   },
   components: {
     ArticleItem,
+  },
+  methods: {
+    removeFilter() {
+      this.$router.push({
+        query: null,
+      })
+    },
   },
 }
 </script>

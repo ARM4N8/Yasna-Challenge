@@ -38,7 +38,7 @@ export default {
   css: ['assets/lib/font-awesome/css/all.min.css', 'assets/sass/global.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/global'],
+  plugins: ['~/plugins/global', '~/plugins/axios'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -54,12 +54,52 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxtjs/auth-next',
+    '@nuxtjs/toast',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: 'https://conduit.productionready.io/api/',
+    baseURL: 'https://api.realworld.io/api/',
+  },
+
+  auth: {
+    strategies: {
+      userLogin: {
+        scheme: 'local',
+        token: {
+          property: 'user.token',
+          global: true,
+        },
+        user: {
+          property: 'user',
+          // autoFetch: true
+        },
+        endpoints: {
+          login: {
+            url: '/users/login',
+            method: 'post',
+          },
+          logout: false,
+          user: { url: '/user', method: 'get' },
+        },
+        redirect: {
+          login: '/login',
+          logout: '/',
+          callback: false,
+          home: false,
+        },
+      },
+    },
+    fullPathRedirect: true,
+    cookie: {
+      prefix: 'auth.',
+      options: {
+        path: '/',
+        expires: 30,
+      },
+    },
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
@@ -69,6 +109,15 @@ export default {
     },
   },
 
+  toast: {
+    position: 'bottom-center',
+    duration: 4000,
+    containerClass: 'shadow',
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    transpile: ['vee-validate/dist/rules'],
+    extractCSS: process.env.NODE_ENV === 'production',
+  },
 }

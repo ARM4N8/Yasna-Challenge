@@ -1,4 +1,5 @@
-import landing from './modules/landing'
+import article from './modules/article'
+import user from './modules/user'
 
 export const state = () => ({})
 
@@ -9,5 +10,6 @@ export const mutations = {}
 export const actions = {}
 
 export const modules = {
-  landing,
+  article,
+  user,
 }

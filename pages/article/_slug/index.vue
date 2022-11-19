@@ -5,6 +5,7 @@
     <article-comments
       :comments="commentsResponse.comments"
       :loading="loading"
+      @onCommentResponse="onCommentResponse"
     ></article-comments>
   </div>
 </template>
@@ -37,6 +38,16 @@ export default {
       this.$route.params.slug
     )
     this.loading = false
+  },
+  methods: {
+    async onCommentResponse(response) {
+      if (response) {
+        this.commentsResponse = await this.$store.dispatch(
+          'getArticleComments',
+          this.$route.params.slug
+        )
+      }
+    },
   },
 }
 </script>

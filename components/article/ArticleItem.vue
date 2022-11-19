@@ -28,7 +28,7 @@
             class="col-auto d-flex align-items-center justify-content-center px-0"
           >
             <img
-              class="rounded-circle img-fluid"
+              class="author-image rounded-circle img-fluid"
               :src="articleData.author.image"
             />
           </div>
@@ -42,10 +42,11 @@
             class="col-auto d-flex align-items-center justify-content-center px-0"
           >
             <b-button
-              :variant="articleData.favorited ? 'success' : 'outline-success'"
+              @click="onFavorite(articleData)"
+              :variant="favorited ? 'success' : 'outline-success'"
               size="sm"
               ><i class="fa-regular fa-heart"></i>
-              {{ articleData.favoritesCount }}</b-button
+              {{ favoritesCount }}</b-button
             >
           </div>
         </div>
@@ -80,9 +81,49 @@
 <script>
 export default {
   props: ['articleData', 'loading'],
+  data() {
+    return {
+      favorited: this.articleData.favorited,
+      favoritesCount: this.articleData.favoritesCount,
+    }
+  },
+  watch: {
+    articleData(newValue, oldValue) {
+      if (newValue != oldValue) {
+        this.favorited = newValue.favorited
+        this.favoritesCount = newValue.favoritesCount
+        
+      }
+    },
+  },
   filters: {
     dateFormat(date) {
       return new Date(Date.parse(date)).toLocaleDateString()
+    },
+  },
+
+  methods: {
+    onFavorite(data) {
+      try {
+        if (!this.$auth.loggedIn) {
+          this.$toasted.error('You have to be logged in')
+          return
+        }
+
+        if (this.favorited) {
+          const response = this.$store.dispatch('unFavoriteArticle', data.slug)
+          if (response) {
+            this.favorited = false
+            this.favoritesCount--
+          }
+        } else {
+          const response = this.$store.dispatch('favoriteArticle', data.slug)
+          if (response) {
+            this.favorited = true
+            this.favoritesCount++
+          }
+        }
+      } catch (error) {}
     },
   },
 }
@@ -95,5 +136,9 @@ export default {
   padding: 4px 6px;
   margin-right: 4px;
   border-radius: 16px;
+}
+.author-image {
+  width: 32px;
+  height: 32px;
 }
 </style>

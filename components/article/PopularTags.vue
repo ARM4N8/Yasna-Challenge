@@ -12,7 +12,12 @@
       <div class="tag-container">
         <p class="col-12 px-0">Popular tags:</p>
         <div class="col-12 d-flex flex-row flex-wrap">
-          <div class="tag" v-for="(t, index) in tags" :key="index">
+          <div
+            @click="setTag(t)"
+            class="tag"
+            v-for="(t, index) in tags"
+            :key="index"
+          >
             {{ t }}
           </div>
         </div>
@@ -23,6 +28,15 @@
 <script>
 export default {
   props: ['tags', 'loading'],
+  methods: {
+    setTag(tag) {
+      this.$router.push({
+        query: {
+          tag: tag,
+        },
+      })
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>
