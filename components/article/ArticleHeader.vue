@@ -25,7 +25,7 @@
           <div class="pt-2">
             <b-button
               @click="followProfile"
-              class="mr-1"
+              class="mr-1 mb-2 mb-md-0"
               size="sm"
               :variant="following ? 'light' : 'outline-light'"
             >

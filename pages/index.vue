@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-header title="Article" text="Global feeds" />
-    <div class="container d-flex flex-row pb-5">
+    <div class="container d-flex flex-row flex-wrap-reverse  pb-5">
       <div class="col-12 col-lg-8">
         <articles
           :loading="loading"
@@ -21,7 +21,7 @@
           ></b-pagination>
         </div>
       </div>
-      <div class="col-lg-4 mt-3">
+      <div class="col-12 col-lg-4 mt-3">
         <popular-tags
           class="position-sticky"
           :tags="popularTags.tags"

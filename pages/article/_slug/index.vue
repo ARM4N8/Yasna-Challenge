@@ -3,7 +3,7 @@
     <article-header :articleData="articleResponse.article"></article-header>
     <article-body :articleData="articleResponse.article"></article-body>
     <article-comments
-      :comments="commentsResponse.comments"
+      :comments="commentsResponse"
       :loading="loading"
       @onCommentResponse="onCommentResponse"
     ></article-comments>
@@ -33,10 +33,14 @@ export default {
     return { articleResponse }
   },
   async mounted() {
-    this.commentsResponse = await this.$store.dispatch(
+    const response = await this.$store.dispatch(
       'getArticleComments',
       this.$route.params.slug
     )
+    if (response)
+      this.commentsResponse = response.comments.sort(function (a, b) {
+        return new Date(b.createdAt) - new Date(a.createdAt)
+      })
     this.loading = false
   },
   methods: {
